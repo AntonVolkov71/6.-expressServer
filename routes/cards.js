@@ -1,4 +1,3 @@
-'use strict';
 
 const cards = require('express').Router();
 const card = require('../data/cards.json');

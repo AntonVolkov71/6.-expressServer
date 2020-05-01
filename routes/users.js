@@ -6,8 +6,6 @@ const users = require('express').Router();
 const userPath = path.resolve('data', 'users.json');
 
 
-
-
 const error = { message: 'Нет пользователя с таким id' };
 
 const readerUsers = (filePath, callback) => {
@@ -15,48 +13,34 @@ const readerUsers = (filePath, callback) => {
     if (err) {
       return callback(err);
     }
-    const jsonInfo = JSON.parse(data)
+    const jsonInfo = JSON.parse(data);
     return callback(jsonInfo);
   });
 };
 
 const showAllUsers = (req, res) => {
-  readerUsers(userPath, data => {
+  readerUsers(userPath, (data) => {
     res.send(data);
   });
 };
 
 
-
-const showOneUser = (req, res, next) => {
+const showOneUser = (req, res) => {
   const { id } = req.params;
 
-  readerUsers(userPath, data => {
-
-    const dataUser = data.filter((el) => {
-      // eslint-disable-next-line no-underscore-dangle
-      return el._id === id;
-    });
+  readerUsers(userPath, (data) => {
+    // eslint-disable-next-line no-underscore-dangle
+    const dataUser = data.filter((el) => el._id === id);
 
     if (dataUser.length > 0) {
       res.send(dataUser);
     } else {
       res.status(404).send(error);
-    };
+    }
   });
 };
 
-
-// usersInfo.filter((el) => {
-//   console.log(el)
-//   // eslint-disable-next-line no-underscore-dangle
-//   return el._id === id;
-// });
-
-
-
 users.get('/', showAllUsers);
 users.get('/:id', showOneUser);
-// users.get('/:id', showUser);
 
 module.exports = users;

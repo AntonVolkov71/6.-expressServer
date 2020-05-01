@@ -26,7 +26,7 @@ const logger = (req, res, next) => {
 
 const notFound = (req, res) => {
   res.status(404).send(error);
-}
+};
 
 
 // const notFound = (req, res, next) => {

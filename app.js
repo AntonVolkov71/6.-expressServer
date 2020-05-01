@@ -4,9 +4,11 @@ const path = require('path');
 const express = require('express');
 
 const usersPath = path.join(__dirname, 'routes', 'users.js');
-const users = require(usersPath);
+// eslint-disable-next-line import/no-dynamic-require
+const { users } = require(usersPath);
 
 const cardsPath = path.join(__dirname, 'routes', 'cards.js');
+// eslint-disable-next-line import/no-dynamic-require
 const cards = require(cardsPath);
 
 const { PORT = 3000 } = process.env;
@@ -17,10 +19,13 @@ const error = { message: 'Запрашиваемый ресурс не найд�
 app.use(express.static(path.join(__dirname, 'public')));
 
 const logger = (req, res, next) => {
-  console.log(`Дата запроса: ${new Date()}`);
-  console.log(`Метод запроса: ${req.method}`);
-  console.log(`Шо открыли: ${req.url}`);
-
+  const logWrite = {
+    date: new Date(),
+    method: req.method,
+    url: req.url,
+  };
+  // eslint-disable-next-line no-console
+  console.log(logWrite);
   next();
 };
 

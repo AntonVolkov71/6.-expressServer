@@ -1,7 +1,7 @@
 {
-  "name": "3.-server-mesto",
+  "name": "6.-expressServer",
   "version": "1.0.0",
-  "description": "",
+  "description": "[expressServer](https://antonvolkov71.github.io/6.-expressServer)",
   "main": "index.js",
   "scripts": {
     "eslint": "eslint ./routes *.js",
@@ -10,7 +10,7 @@
     "dev": "nodemon app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Anton Volkov <volkovanton71@yandex.ru>",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^6.8.0",

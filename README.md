@@ -42,24 +42,104 @@
 
 ```
 
-```
-Открытие страниц в браузере
+### Запросы
 
-  http://localhost:3000 - открытие главной страницы проекта Mesto
+#### Главная страница
 
-Запросы
-
- GET localhost:3000/users - сервер вернёт JSON-объект из файла users.json
-
-GET localhost:3000/cards сервер вернёт JSON-объект из файла cards.json
-
-GET localhost:3000/users/8340d0ec33270a25f2413b69, сервер вернёт JSON-объект пользователя с переданным после /users идентификатором
-
-если пользователя с запрошенным идентификатором нет, сервер вернёт 404 статус ответа и JSON: { "message": "Нет пользователя с таким id" }
-
-при запросе на несуществующий адрес, сервер вернёт 404 статус ответа и JSON: { "message": "Запрашиваемый ресурс не найден" }
+  ```
+  URL - http://localhost:3000
+  ```
+  
+  
+#### Получить карточку пользователя 
 
 ```
+GET
+ 
+  localhost:3000/users/:id 
+ 
+ 
+URL параметры    
+
+  id = [id_пользователя]
+ 
+ 
+Ответ от сервера - пользователь найден в базе
+ 
+  {
+     "name":"Bret Victor",
+     "about":"Designer, engineer",
+     "avatar":"https://postlight.com/wp-content/uploads/2018/03/109TC-e1535047852633.jpg",
+     "_id":"8340d0ec33270a25f2413b69"
+   }
+
+
+Ответ от сервера - пользователь не найден в базе 
+ 
+   { message: 'Нет пользователя с таким id' }
+ 
+ ```
+ 
+#### Получить карточки всех пользователей
+
+ ```
+URL - http://localhost:3000/users
+  
+  
+Ответ от сервера 
+ 
+ [
+    {
+       "name":"Bret Victor",
+       "about":"Designer, engineer",
+       "avatar":"https://postlight.com/wp-content/uploads/2018/03/109TC-e1535047852633.jpg",
+       "_id":"8340d0ec33270a25f2413b69"
+     },
+
+     { ... }
+ ]
+  
+  ```
+
+#### Получить карточки всех фотографий
+
+ ```
+URL - http://localhost:3000/cards
+  
+  
+Ответ от сервера 
+ 
+ [
+     {
+        "likes": [
+            { ... }
+        ],
+        "_id": "5d208fb50fdbbf001ffdf72a",
+        "name": "Иваново",
+        "link": "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg",
+        "owner": {
+            "name": "Bret Victor",
+            "about": "Designer, engineer",
+            "avatar": "https://postlight.com/wp-content/uploads/2018/03/109TC-e1535047852633.jpg",
+            "_id": "8340d0ec33270a25f2413b69"
+        },
+        "createdAt": "2019-07-06T12:10:29.149Z"
+    },
+
+     { ... }
+ ]
+  
+  ```
+
+#### Несуществующие запросы
+
+ ```
+Ответ от сервера 
+
+  { message: 'Запрашиваемый ресурс не найден' }
+  
+```
+
 ---
 
 #### Автор проекта: Антон Волков. :bowtie:

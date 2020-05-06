@@ -3,6 +3,7 @@ const path = require('path');
 const users = require('express').Router();
 
 const userPath = path.resolve('data', 'users.json');
+
 const error = { message: 'Нет пользователя с таким id' };
 
 const readerFile = require('./utils/readFile.js');

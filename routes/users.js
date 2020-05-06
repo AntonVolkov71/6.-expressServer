@@ -18,9 +18,9 @@ const showOneUser = (req, res) => {
 
   readerFile(userPath, (data) => {
     // eslint-disable-next-line no-underscore-dangle
-    const dataUser = data.filter((el) => el._id === id);
+    const dataUser = data.find((el) => el._id === id);
 
-    if (dataUser.length > 0) {
+    if (dataUser) {
       res.send(dataUser);
     } else {
       res.status(404).send(error);

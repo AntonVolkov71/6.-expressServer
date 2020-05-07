@@ -2,7 +2,7 @@ const path = require('path');
 
 const cards = require('express').Router();
 
-const readerFile = require('./utils/readFile.js');
+const readerFile = require('../utils/readFile.js');
 
 const cardPath = path.resolve('data', 'cards.json');
 

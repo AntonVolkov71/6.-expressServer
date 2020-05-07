@@ -6,7 +6,7 @@ const userPath = path.resolve('data', 'users.json');
 
 const error = { message: 'Нет пользователя с таким id' };
 
-const readerFile = require('./utils/readFile.js');
+const readerFile = require('../utils/readFile.js');
 
 const showAllUsers = (req, res) => {
   readerFile(userPath, (data) => {

@@ -5,8 +5,7 @@ const readerFile = (filePath, callback) => {
     if (err) {
       return callback(err);
     }
-    const jsonInfo = JSON.parse(data);
-    return callback(jsonInfo);
+    return callback(data);
   });
 };
 

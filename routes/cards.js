@@ -6,7 +6,7 @@ const readerFile = require('../utils/readFile.js');
 const foundFile = require('../utils/foundFile.js');
 
 const errornNotFoundFile = { message: 'Запрашиваемый файл не найден' };
-const errorEmpty = { message: 'Запрашиваемый файл пуст' };
+const errorEmpty = { message: 'Запрашиваемый файл невалиден' };
 
 const cardPath = path.resolve('data', 'cards.json');
 
@@ -17,11 +17,11 @@ const showcards = (req, res) => {
         const allCards = JSON.parse(data);
         res.send(allCards);
       } catch (err) {
-        res.send(errorEmpty);
+        res.status(500).send(errorEmpty);
       }
     });
   } else {
-    res.send(errornNotFoundFile);
+    res.status(500).send(errornNotFoundFile);
   }
 };
 

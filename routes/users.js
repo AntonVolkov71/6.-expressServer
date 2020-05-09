@@ -1,13 +1,12 @@
 const path = require('path');
 
-
 const users = require('express').Router();
 
 const userPath = path.resolve('data', 'users.json');
 
 const error = { message: 'Нет пользователя с таким id' };
 const errornNotFoundFile = { message: 'Запрашиваемый файл не найден' };
-const errorEmpty = { message: 'Запрашиваемый файл пуст' };
+const errorEmpty = { message: 'Запрашиваемый файл невалидный' };
 
 const readerFile = require('../utils/readFile.js');
 const foundFile = require('../utils/foundFile.js');
@@ -19,11 +18,11 @@ const showAllUsers = (req, res) => {
         const allUsers = JSON.parse(data);
         res.send(allUsers);
       } catch (err) {
-        res.send(errorEmpty);
+        res.status(500).send(errorEmpty);
       }
     });
   } else {
-    res.send(errornNotFoundFile);
+    res.status(500).send(errornNotFoundFile);
   }
 };
 
@@ -42,7 +41,7 @@ const showOneUser = (req, res) => {
         res.status(404).send(error);
       }
     } catch (err) {
-      res.send(errornNotFoundFile);
+      res.status(500).send(errorEmpty);
     }
   });
 };

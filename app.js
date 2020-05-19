@@ -48,5 +48,5 @@ app.use((req, res, next) => {
 
 app.use('/users', users);
 app.use('/cards', cards);
-// app.use('/', notFound);
+app.use('/', notFound);
 app.listen({ host: 'localhost', port: PORT });

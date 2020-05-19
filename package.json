@@ -4,8 +4,8 @@
   "description": "[expressServer](https://antonvolkov71.github.io/6.-expressServer)",
   "main": "index.js",
   "scripts": {
-    "eslint": "eslint ./routes *.js",
-    "ooda": "eslint ./routes *.js --fix",
+    "eslint": "eslint ./ *.js",
+    "ooda": "eslint ./ *.js --fix",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },

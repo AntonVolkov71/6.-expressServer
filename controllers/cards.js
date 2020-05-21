@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const Card = require('../models/card');
 
 const showAllCards = (req, res) => {
@@ -12,16 +14,23 @@ const postCard = (req, res) => {
   const { _id } = req.user;
 
   Card.create({
-    name, link, owner: _id, likes: _id,
+    name, link, owner: _id,
   })
-    .then((ad) => res.send({ data: ad }))
-    .catch((err) => res.status(500).send({ message: err }));
+    .then((add) => res.send({ data: add }))
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
 const deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params._id)
-    .then((card) => (!card ? res.status(404).send({ message: 'Произошла ошибка' }) : res.send({ data: card })))
-    .catch((err) => res.status(404).send({ message: err }));
+  const validId = mongoose.Types.ObjectId.isValid(req.params._id);
+
+  if (validId) {
+    Card.findByIdAndRemove(req.params._id)
+      .then((card) => (!card ? res.status(404).send({ message: 'Карточка не найдена' }) : res.send({ data: card })))
+      .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+  } else {
+    res.status(400).send({ message: 'Невалидный id' });
+  }
 };
+
 
 module.exports = { showAllCards, postCard, deleteCard };

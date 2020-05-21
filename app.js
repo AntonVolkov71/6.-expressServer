@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const routes = require('./routes/routes');
+const routes = require('./routes');
 const logger = require('./utils/logger');
 
 const { PORT, DATABASE_URL } = require('./config');

@@ -4,8 +4,8 @@
   "description": "[expressServer](https://antonvolkov71.github.io/6.-expressServer)",
   "main": "index.js",
   "scripts": {
-    "eslint": "eslint ./routes *.js",
-    "ooda": "eslint ./routes *.js --fix",
+    "eslint": "eslint ./ *.js",
+    "ooda": "eslint ./ *.js --fix",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
@@ -20,6 +20,8 @@
   },
   "dependencies": {
     "body-parser": "^1.19.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongodb": "^3.5.7",
+    "mongoose": "^5.9.14"
   }
 }

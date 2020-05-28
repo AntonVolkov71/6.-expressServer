@@ -1,34 +1,32 @@
-
-const path = require('path');
-
+const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const users = require('./routes/users.js');
-const cards = require('./routes/cards');
+const routes = require('./routes');
+const logger = require('./utils/logger');
 
-const { PORT = 3000 } = process.env;
+const { PORT, DATABASE_URL } = require('./config');
 
 const app = express();
-const error = { message: 'Запрашиваемый ресурс не найден' };
 
-app.use(express.static(path.join(__dirname, 'public')));
+mongoose.connect(DATABASE_URL, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true,
+});
 
-const logger = (req, res, next) => {
-  // eslint-disable-next-line no-console
-  console.log(new Date(), req.method, req.url);
-  next();
-};
-
-const notFound = (req, res) => {
-  res.status(404).send(error);
-};
-
-
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(logger);
 
-app.use('/users', users);
-app.use('/cards', cards);
-app.use('/', notFound);
+app.use((req, res, next) => {
+  req.user = {
+    _id: '5ec2ffddd3ae793bf5a25a4f',
+  };
+  next();
+});
+
+app.use(routes);
+
 app.listen({ host: 'localhost', port: PORT });

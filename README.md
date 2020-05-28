@@ -30,6 +30,11 @@
 ```
 
 ```
+Запуск MongoDB
+
+  $mongod --dbpath /usr/local/var/mongodb
+```
+```
 Запуск настроенных скриптов для сборки
 
   $npm run dev - запуск сервера на локальном хосте с порта 3000 в режиме hot reload

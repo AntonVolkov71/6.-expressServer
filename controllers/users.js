@@ -33,7 +33,7 @@ const postUser = (req, res) => {
       name, about, avatar, email, password: hash,
     }))
     .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(409).send({ message: 'Произошла ошибка' }));
 };
 
 

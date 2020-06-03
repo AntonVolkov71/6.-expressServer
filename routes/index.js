@@ -13,7 +13,7 @@ const notFound = require('./notFound');
 router.post('/signin', login);
 router.post('/signup', postUser);
 
-//router.use(auth);
+router.use(auth);
 
 router.use('/users', users);
 router.use('/cards', cards);

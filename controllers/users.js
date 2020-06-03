@@ -33,12 +33,14 @@ const postUser = (req, res) => {
       name, about, avatar, email, password: hash,
     }))
     .then((user) => res.send({ data: user.omitPrivate() }))
-    .catch(() => res.status(409).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
 
 const login = (req, res) => {
   const { email, password } = req.body;
+
+
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
@@ -51,9 +53,10 @@ const login = (req, res) => {
       res.send({ token });
     })
     .catch((err) => {
-      res
-        .status(401)
-        .send({ message: err.message });
+      const statusCode = err.statusCode || 500;
+      res.status(statusCode).send({
+        message: statusCode === 500 ? 'Произошла ошибка' : err.message,
+      });
     });
 };
 

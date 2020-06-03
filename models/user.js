@@ -49,7 +49,7 @@ userSchema.methods.omitPrivate = function omitPrivate() {
 };
 
 userSchema.statics.findUserByCredentials = function (email, password) {
-  return this.findOne({ email }).select('+password')
+  return this.findOne({ email }).omitPrivate()
     .then((user) => {
       if (!user) {
         return Promise.reject(new Error('Неправильные почта или пароль'));

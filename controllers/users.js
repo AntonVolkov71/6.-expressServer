@@ -19,7 +19,7 @@ const showOneUser = (req, res) => {
 const showAllUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => res.status(500).send(err.message));
 };
 
 
@@ -32,8 +32,12 @@ const postUser = (req, res) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then((user) => res.send({ data: user.omitPrivate() }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((user) => res.status(201).send({
+      data: user.omitPrivate(),
+    }))
+    .catch(() => res.status(400).send({
+      message: 'Произошла ошибка',
+    }));
 };
 
 
@@ -50,11 +54,10 @@ const login = (req, res) => {
 
       res.send({ token });
     })
-    .catch((err) => {
-      const statusCode = err.statusCode || 500;
-      res.status(statusCode).send({
-        message: statusCode === 500 ? 'Произошла ошибка' : err.message,
-      });
+    .catch(() => {
+      res
+        .status(401)
+        .send({ message: 'Произошла ошибка' });
     });
 };
 

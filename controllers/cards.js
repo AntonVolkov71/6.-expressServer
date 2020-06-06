@@ -24,13 +24,19 @@ const deleteCard = (req, res) => {
   const validId = mongoose.Types.ObjectId.isValid(req.params._id);
 
   if (validId) {
-    Card.findByIdAndRemove(req.params._id)
-      .then((card) => (!card ? res.status(404).send({ message: 'Карточка не найдена' }) : res.send({ data: card })))
+    Card.findById(req.params._id)
+      .then((card) => {
+        const ownerValid = card.owner.equals(req.user._id);
+        if (card && ownerValid) {
+          res.send({ data: card });
+          return card.remove();
+        }
+        return res.status(403).send({ message: 'Не твое не трогай' });
+      })
       .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
   } else {
     res.status(400).send({ message: 'Невалидный id' });
   }
 };
-
 
 module.exports = { showAllCards, postCard, deleteCard };

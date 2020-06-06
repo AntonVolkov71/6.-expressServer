@@ -5,7 +5,6 @@ const {
   postUser, login,
 } = require('../controllers/users');
 
-
 const users = require('./users');
 const cards = require('./cards');
 const notFound = require('./notFound');

@@ -22,7 +22,6 @@ const showAllUsers = (req, res) => {
     .catch((err) => res.status(500).send(err.message));
 };
 
-
 const postUser = (req, res) => {
   const {
     name, about, avatar, email, password,
@@ -35,7 +34,7 @@ const postUser = (req, res) => {
     .then((user) => res.status(201).send({
       data: user.omitPrivate(),
     }))
-    .catch(() => res.status(400).send({
+    .catch(() => res.status(500).send({
       message: 'Произошла ошибка',
     }));
 };
@@ -56,7 +55,7 @@ const login = (req, res) => {
     })
     .catch(() => {
       res
-        .status(401)
+        .status(500)
         .send({ message: 'Произошла ошибка' });
     });
 };

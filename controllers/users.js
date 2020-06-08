@@ -6,7 +6,6 @@ const User = require('../models/user.js');
 const showOneUser = (req, res) => {
   const validId = mongoose.Types.ObjectId.isValid(req.params._id);
 
-
   if (validId) {
     User.findById(req.params._id)
       .then((user) => (user ? res.send({ data: user }) : res.status(404).send({ message: 'пользователь не найден' })))
@@ -27,18 +26,22 @@ const postUser = (req, res) => {
     name, about, avatar, email, password,
   } = req.body;
 
-  bcrypt.hash(password, 10)
-    .then((hash) => User.create({
-      name, about, avatar, email, password: hash,
-    }))
-    .then((user) => res.status(201).send({
-      data: user.omitPrivate(),
-    }))
-    .catch(() => res.status(500).send({
-      message: 'Произошла ошибка',
-    }));
+  return User.existingUser(email, password)
+    .then(() => {
+      bcrypt.hash(password, 10)
+        .then((hash) => User.create({
+          name, about, avatar, email, password: hash,
+        }))
+        .then((user) => res.status(201).send({
+          data: user.omitPrivate(),
+        }));
+    })
+    .catch((err) => res
+      .status(err.statusCode || 500)
+      .send({
+        message: err.message || 'На сервере произошла ошибка',
+      }));
 };
-
 
 const login = (req, res) => {
   const { email, password } = req.body;
@@ -53,11 +56,11 @@ const login = (req, res) => {
 
       res.send({ token });
     })
-    .catch(() => {
-      res
-        .status(500)
-        .send({ message: 'Произошла ошибка' });
-    });
+    .catch((err) => res
+      .status(err.statusCode || 500)
+      .send({
+        message: err.message || 'На сервере произошла ошибка',
+      }));
 };
 
 module.exports = {

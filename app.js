@@ -18,8 +18,8 @@ mongoose.connect(DATABASE_URL, {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(logger);
 
+app.use(logger);
 
 app.use(routes);
 

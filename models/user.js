@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const UnauthorizedError = require('../errors/unathorizedError');
 const LoginValidError = require('../errors/loginValidError');
 const ExistingUserError = require('../errors/existingUserError');
+const BodyDataValidError = require('../errors/bodyDataValidError');
 
 const emailValid = (userEmail) => validator.isEmail(userEmail);
 
@@ -53,11 +54,18 @@ userSchema.methods.omitPrivate = function omitPrivate() {
   delete obj.password;
   return obj;
 };
+userSchema.statics.bodyValid = function () {
+  return Promise.reject(new BodyDataValidError('Неvdvsdь'));
+};
 
-userSchema.statics.existingUser = function (email, password) {
-  if (password.length < 8 || !emailValid(email)) {
-    return Promise.reject(new LoginValidError('Неккоректные почта или пароль'));
-  }
+userSchema.statics.validLogin = function (email, password) {
+  return (password.length < 8 || !emailValid(email)
+    ? Promise.reject(new LoginValidError('Неккоректные почта или пароль'))
+    : Promise.resolve());
+};
+
+
+userSchema.statics.existingUser = function (email) {
   return this.findOne({ email })
     .then((user) => {
       if (user) {

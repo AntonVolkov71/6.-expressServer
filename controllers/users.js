@@ -4,10 +4,8 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user.js');
 
-const BodyDataValidError = require('../errors/bodyDataValidError');
-const FindIdUserError = require('../errors/findIdUserError');
-const IdValidError = require('../errors/idValidError');
-
+const NotFoundError = require('../errors/notFoundError');
+const BadRequestError = require('../errors/badRequestError');
 const serverError = require('../errors/serverError');
 
 const showOneUser = (req, res) => {
@@ -15,14 +13,18 @@ const showOneUser = (req, res) => {
 
   if (validId) {
     return User.findById(req.params._id)
-      .then((user) => (user ? res.send({ data: user }) : Promise.reject(new FindIdUserError('Пользователь не найден'))))
-      .catch((err) => res
-        .status(err.statusCode || 500)
-        .send({
-          message: err.message || serverError,
-        }));
+      .then((user) => (user ? res.send({ data: user }) : Promise.reject(new NotFoundError('Пользователь не найден'))))
+      .catch((err) => {
+        const statusCode = err.statusCode || 500;
+        return res
+          .status(statusCode)
+          .send({
+            message: statusCode === 500 ? serverError : err.message,
+          });
+      });
   }
-  const { message, statusCode } = new IdValidError('Невалидный id');
+
+  const { message, statusCode } = new BadRequestError('Невалидный id');
 
   return res
     .status(statusCode)
@@ -52,20 +54,16 @@ const postUser = (req, res) => {
           data: user.omitPrivate(),
         }))))
     .catch((err) => {
-      if (err._message === 'user validation failed') {
-        const { statusCode } = new BodyDataValidError();
-
-        return res
-          .status(statusCode)
-          .send({
-            message: err.message,
-          });
+      let error = err;
+      if (error instanceof mongoose.Error.ValidationError) {
+        error = new BadRequestError();
       }
 
+      const statusCode = error.statusCode || 500;
       return res
-        .status(err.statusCode || 500)
+        .status(statusCode)
         .send({
-          message: err.message || serverError,
+          message: statusCode === 500 ? serverError : err.message,
         });
     });
 };
@@ -83,11 +81,14 @@ const login = (req, res) => {
 
       res.send({ token });
     })
-    .catch((err) => res
-      .status(err.statusCode || 500)
-      .send({
-        message: err.message || serverError,
-      }));
+    .catch((err) => {
+      const statusCode = err.statusCode || 500;
+      return res
+        .status(statusCode)
+        .send({
+          message: statusCode === 500 ? serverError : err.message,
+        });
+    });
 };
 
 module.exports = {

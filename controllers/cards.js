@@ -2,10 +2,9 @@ const mongoose = require('mongoose');
 
 const Card = require('../models/card');
 
-const FindCardError = require('../errors/findCardError');
-const OwnerDelCardError = require('../errors/ownerDelCardError');
-const IdValidError = require('../errors/idValidError');
-
+const NotFoundError = require('../errors/notFoundError');
+const ForbiddenError = require('../errors/forbiddenError');
+const BadRequestError = require('../errors/badRequestError');
 const serverError = require('../errors/serverError');
 
 const showAllCards = (req, res) => {
@@ -25,9 +24,19 @@ const postCard = (req, res) => {
     .then((add) => {
       res.send({ data: add });
     })
-    .catch((err) => (err._message === 'card validation failed'
-      ? res.status(400).send({ message: err.message })
-      : res.status(500).send({ message: err.message })));
+    .catch((err) => {
+      let error = err;
+      if (error instanceof mongoose.Error.ValidationError) {
+        error = new BadRequestError();
+      }
+
+      const statusCode = error.statusCode || 500;
+      return res
+        .status(statusCode)
+        .send({
+          message: statusCode === 500 ? serverError : err.message,
+        });
+    });
 };
 
 const deleteCard = (req, res) => {
@@ -37,23 +46,26 @@ const deleteCard = (req, res) => {
     return Card.findById(req.params._id)
       .then((card) => {
         if (!card) {
-          return Promise.reject(new FindCardError('Карточки с данным _id не существует'));
+          return Promise.reject(new NotFoundError('Карточки с данным _id не существует'));
         }
 
         const ownerValid = card.owner.equals(req.user._id);
 
         return card && ownerValid
           ? Card.deleteOne(card).then(res.send({ data: card }))
-          : Promise.reject(new OwnerDelCardError('Вы не можете удалить карточку, которую не создавали'));
+          : Promise.reject(new ForbiddenError('Вы не можете удалить карточку, которую не создавали'));
       })
-      .catch((err) => res
-        .status(err.statusCode || 500)
-        .send({
-          message: err.message || serverError,
-        }));
+      .catch((err) => {
+        const statusCode = err.statusCode || 500;
+        return res
+          .status(statusCode)
+          .send({
+            message: statusCode === 500 ? serverError : err.message,
+          });
+      });
   }
 
-  const { message, statusCode } = new IdValidError('Невалидный id');
+  const { message, statusCode } = new BadRequestError('Невалидный id');
 
   return res
     .status(statusCode)

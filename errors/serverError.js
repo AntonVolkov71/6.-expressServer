@@ -1,3 +1,3 @@
-const serverError = 'Произошла ошибка';
+const serverError = 'Ошибка на сервере';
 
 module.exports = serverError;

@@ -2,10 +2,10 @@ const validator = require('validator');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const UnauthorizedError = require('../errors/unathorizedError');
-const LoginValidError = require('../errors/loginValidError');
+const UnathorizedError = require('../errors/unathorizedError');
 const ExistingUserError = require('../errors/existingUserError');
-const BodyDataValidError = require('../errors/bodyDataValidError');
+const BadRequestError = require('../errors/badRequestError');
+
 
 const emailValid = (userEmail) => validator.isEmail(userEmail);
 
@@ -54,13 +54,11 @@ userSchema.methods.omitPrivate = function omitPrivate() {
   delete obj.password;
   return obj;
 };
-userSchema.statics.bodyValid = function () {
-  return Promise.reject(new BodyDataValidError('Неvdvsdь'));
-};
+
 
 userSchema.statics.validLogin = function (email, password) {
   return (password.length < 8 || !emailValid(email)
-    ? Promise.reject(new LoginValidError('Неккоректные почта или пароль'))
+    ? Promise.reject(new BadRequestError('Неккоректные почта или пароль'))
     : Promise.resolve());
 };
 
@@ -80,17 +78,17 @@ userSchema.statics.findUserByCredentials = function (email, password) {
 
     .then((user) => {
       if (password.length < 8 || !emailValid(email)) {
-        return Promise.reject(new LoginValidError('Неккоректные почта или пароль'));
+        return Promise.reject(new BadRequestError('Неккоректные почта или пароль'));
       }
 
       if (!user) {
-        return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
+        return Promise.reject(new UnathorizedError('Неправильные почта или пароль'));
       }
 
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
+            return Promise.reject(new UnathorizedError('Неправильные почта или пароль'));
           }
           return user;
         });

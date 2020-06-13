@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -6,14 +8,12 @@ const { errors } = require('celebrate');
 
 const routes = require('./routes');
 
-const { PORT, DATABASE_URL } = require('./config');
-console.log(PORT)
 const nextError = require('./middlewares/nextError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
 
-mongoose.connect(DATABASE_URL, {
+mongoose.connect(process.env.DATABASE_URL, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -31,4 +31,4 @@ app.use(errorLogger);
 app.use(errors());
 app.use(nextError);
 
-app.listen({ host: 'localhost', port: PORT });
+app.listen({ host: 'localhost', port: process.env.PORT });

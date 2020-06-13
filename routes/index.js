@@ -1,5 +1,7 @@
 const router = require('express').Router();
+
 const auth = require('../middlewares/auth');
+const { signUpCelebrate, signInCelebrate } = require('../celebrates/celebrates');
 
 const {
   postUser, login,
@@ -9,8 +11,13 @@ const users = require('./users');
 const cards = require('./cards');
 const notFound = require('./notFound');
 
-router.post('/signin', login);
-router.post('/signup', postUser);
+router.post('/signin', signInCelebrate, login);
+
+
+router.post('/signup', signUpCelebrate, postUser);
+
+
+// router.post('/signup', postUser);
 
 router.use(auth);
 

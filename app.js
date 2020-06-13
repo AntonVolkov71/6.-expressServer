@@ -7,7 +7,7 @@ const { errors } = require('celebrate');
 const routes = require('./routes');
 
 const { PORT, DATABASE_URL } = require('./config');
-
+console.log(PORT)
 const nextError = require('./middlewares/nextError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 

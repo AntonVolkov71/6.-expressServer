@@ -52,11 +52,19 @@ const postUser = (req, res, next) => {
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
+  let myKey = '';
+
+  if (process.env.NODE_ENV === 'production') {
+    myKey = process.env.JWT_SECRET;
+  } else {
+    myKey = 'super-strong-secret';
+  }
+
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        process.env.JWT_SECRET,
+        myKey,
         { expiresIn: '7d' },
       );
 

@@ -1,6 +1,16 @@
 
 const jwt = require('jsonwebtoken');
 
+
+let myKey = '';
+
+if (process.env.NODE_ENV === 'production') {
+  myKey = process.env.JWT_SECRET;
+} else {
+  myKey = 'super-strong-secret';
+}
+
+
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization || !authorization.startsWith('Bearer ')) {
@@ -13,7 +23,7 @@ const auth = (req, res, next) => {
   let payload;
 
   try {
-    payload = jwt.verify(token, process.env.JWT_SECRET);
+    payload = jwt.verify(token, myKey);
   } catch (err) {
     return res
       .status(401)

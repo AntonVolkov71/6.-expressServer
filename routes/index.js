@@ -11,13 +11,15 @@ const users = require('./users');
 const cards = require('./cards');
 const notFound = require('./notFound');
 
+router.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+
 router.post('/signin', signInCelebrate, login);
 
-
 router.post('/signup', signUpCelebrate, postUser);
-
-
-// router.post('/signup', postUser);
 
 router.use(auth);
 

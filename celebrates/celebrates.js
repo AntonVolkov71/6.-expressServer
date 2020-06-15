@@ -1,6 +1,6 @@
 const { celebrate, Joi } = require('celebrate');
 
-const weburl = new RegExp(/^https?:\/{2}/);
+const weburl = new RegExp(/^https?:\/\/(w{3}\.)?(((\d{1,3}\.){3}\d{1,3})|([A-z][A-z0-9.-]+\.[A-z.]{2,}))([A-z0-9/-]+\u0023?)?(:\d{2,5})?/);
 
 const signUpCelebrate = celebrate({
   body: Joi.object().keys({

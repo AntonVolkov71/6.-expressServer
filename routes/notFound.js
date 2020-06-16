@@ -1,7 +1,9 @@
-const error = { message: 'Запрашиваемый ресурс не найден' };
+const NotFoundError = require('../errors/notFoundError');
 
-const notFound = (req, res) => {
-  res.status(404).send(error);
+const error = 'Запрашиваемый ресурс не найден';
+
+const notFound = () => {
+  throw new NotFoundError(error);
 };
 
 module.exports = notFound;

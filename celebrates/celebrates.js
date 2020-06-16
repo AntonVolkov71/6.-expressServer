@@ -32,7 +32,6 @@ const idCelebrate = celebrate({
   }),
 });
 
-
 module.exports = {
   signUpCelebrate, signInCelebrate, postCardCelebrate, idCelebrate,
 };

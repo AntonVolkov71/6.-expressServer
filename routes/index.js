@@ -2,6 +2,7 @@ const router = require('express').Router();
 
 const auth = require('../middlewares/auth');
 const { signUpCelebrate, signInCelebrate } = require('../celebrates/celebrates');
+const badQuery = require('../middlewares/badQuery');
 
 const {
   postUser, login,
@@ -17,6 +18,14 @@ router.get('/crash-test', () => {
   }, 0);
 });
 
+// process.on('message', function (msg) {
+//   if (msg == 'shutdown') {
+//     console.log('Closing all connections...');
+//   }
+// });
+
+router.use('/', badQuery);
+
 router.post('/signin', signInCelebrate, login);
 
 router.post('/signup', signUpCelebrate, postUser);
@@ -25,6 +34,6 @@ router.use(auth);
 
 router.use('/users', users);
 router.use('/cards', cards);
-router.use('/', notFound);
+router.all('*', notFound);
 
 module.exports = router;

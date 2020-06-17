@@ -12,12 +12,6 @@ const users = require('./users');
 const cards = require('./cards');
 const notFound = require('./notFound');
 
-const BadRequestError = require('../errors/badRequestError');
-
-const rew = () => {
-  throw new BadRequestError('Сервер сейчас упадёт');
-};
-
 router.get('/crash-test', () => {
   process.on('message', (msg) => {
     if (msg === 'Сервер сейчас упадёт') {
@@ -27,7 +21,7 @@ router.get('/crash-test', () => {
   });
 
   setTimeout(() => {
-    rew();
+    throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
 

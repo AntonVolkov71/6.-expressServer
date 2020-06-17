@@ -6,7 +6,7 @@ const signUpCelebrate = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().regex(weburl),
+    avatar: Joi.string().regex(weburl).error(new Error('Bad link')),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),
@@ -22,7 +22,7 @@ const signInCelebrate = celebrate({
 const postCardCelebrate = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().regex(weburl),
+    link: Joi.string().regex(weburl).error(new Error('Bad link')),
   }),
 });
 

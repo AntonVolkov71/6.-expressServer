@@ -13,7 +13,15 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
 
-mongoose.connect(process.env.DATABASE_URL, {
+const dbURL = process.env.NODE_ENV === 'production'
+  ? process.env.DATABASE_URL
+  : 'mongodb://localhost:27017/mestodb';
+
+const PORT = process.env.NODE_ENV === 'production'
+  ? process.env.PORT
+  : 3000;
+
+mongoose.connect(dbURL, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -32,4 +40,4 @@ app.use(errorLogger);
 app.use(errors());
 app.use(nextError);
 
-app.listen({ host: 'localhost', port: process.env.PORT });
+app.listen({ host: 'localhost', port: PORT });

@@ -2,7 +2,6 @@ const router = require('express').Router();
 
 const auth = require('../middlewares/auth');
 const { signUpCelebrate, signInCelebrate } = require('../celebrates/celebrates');
-const badQuery = require('../middlewares/badQuery');
 
 const {
   postUser, login,
@@ -24,8 +23,6 @@ router.get('/crash-test', () => {
     throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
-
-router.use('/', badQuery);
 
 router.post('/signin', signInCelebrate, login);
 router.post('/signup', signUpCelebrate, postUser);

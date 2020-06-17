@@ -1,4 +1,4 @@
-const serverError = require('../errors/serverError');
+const serverError = require('../errors/textErrors/serverError');
 
 const nextError = (err, req, res, next) => {
   const statusCode = err.statusCode || 500;

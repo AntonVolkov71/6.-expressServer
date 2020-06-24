@@ -5,20 +5,19 @@ const Card = require('../models/card');
 const NotFoundError = require('../errors/notFoundError');
 const ForbiddenError = require('../errors/forbiddenError');
 const BadRequestError = require('../errors/badRequestError');
-const serverError = require('../errors/serverError');
 
-const showAllCards = (req, res) => {
+const showAllCards = (req, res, next) => {
   Card.find({})
     .populate(['owner', 'likes'])
     .then((cards) => res.send({ data: cards }))
-    .catch(() => res.status(500).send({ message: serverError }));
+    .catch(next);
 };
 
-const postCard = (req, res) => {
+const postCard = (req, res, next) => {
   const { name, link } = req.body;
   const { _id } = req.user;
 
-  Card.create({
+  return Card.create({
     name, link, owner: _id,
   })
     .then((add) => {
@@ -26,52 +25,25 @@ const postCard = (req, res) => {
     })
     .catch((err) => {
       let error = err;
+
       if (error instanceof mongoose.Error.ValidationError) {
-        error = new BadRequestError();
+        error = new BadRequestError(err.message);
       }
-
-      const statusCode = error.statusCode || 500;
-      return res
-        .status(statusCode)
-        .send({
-          message: statusCode === 500 ? serverError : err.message,
-        });
+      return next(error);
     });
 };
 
-const deleteCard = (req, res) => {
-  const validId = mongoose.Types.ObjectId.isValid(req.params._id);
+const deleteCard = (req, res, next) => Card.findById(req.params._id)
+  .then((card) => {
+    if (!card) {
+      return Promise.reject(new NotFoundError('Карточки с данным _id не существует'));
+    }
 
-  if (validId) {
-    return Card.findById(req.params._id)
-      .then((card) => {
-        if (!card) {
-          return Promise.reject(new NotFoundError('Карточки с данным _id не существует'));
-        }
-
-        const ownerValid = card.owner.equals(req.user._id);
-
-        return card && ownerValid
-          ? Card.deleteOne(card).then(res.send({ data: card }))
-          : Promise.reject(new ForbiddenError('Вы не можете удалить карточку, которую не создавали'));
-      })
-      .catch((err) => {
-        const statusCode = err.statusCode || 500;
-        return res
-          .status(statusCode)
-          .send({
-            message: statusCode === 500 ? serverError : err.message,
-          });
-      });
-  }
-
-  const { message, statusCode } = new BadRequestError('Невалидный id');
-
-  return res
-    .status(statusCode)
-    .send({
-      message,
-    });
-};
+    const ownerValid = card.owner.equals(req.user._id);
+    return card && ownerValid
+      ? Card.deleteOne(card).then(res.send({ data: card }))
+      : Promise.reject(new ForbiddenError('Вы не можете удалить карточку, которую не создавали'));
+  })
+  .catch(next);
 
 module.exports = { showAllCards, postCard, deleteCard };

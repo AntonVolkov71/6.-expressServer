@@ -1,5 +1,7 @@
 const router = require('express').Router();
+
 const auth = require('../middlewares/auth');
+const { signUpCelebrate, signInCelebrate } = require('../celebrates/celebrates');
 
 const {
   postUser, login,
@@ -9,13 +11,27 @@ const users = require('./users');
 const cards = require('./cards');
 const notFound = require('./notFound');
 
-router.post('/signin', login);
-router.post('/signup', postUser);
+router.get('/crash-test', () => {
+  process.on('message', (msg) => {
+    if (msg === 'Сервер сейчас упадёт') {
+      // eslint-disable-next-line no-console
+      console.log('Closing all connections...');
+    }
+  });
+
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+
+router.post('/signin', signInCelebrate, login);
+router.post('/signup', signUpCelebrate, postUser);
 
 router.use(auth);
 
 router.use('/users', users);
 router.use('/cards', cards);
-router.use('/', notFound);
+
+router.all('*', notFound);
 
 module.exports = router;

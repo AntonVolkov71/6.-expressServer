@@ -4,10 +4,6 @@ const bcrypt = require('bcryptjs');
 
 const UnathorizedError = require('../errors/unathorizedError');
 const ExistingUserError = require('../errors/existingUserError');
-const BadRequestError = require('../errors/badRequestError');
-
-
-const emailValid = (userEmail) => validator.isEmail(userEmail);
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -55,14 +51,6 @@ userSchema.methods.omitPrivate = function omitPrivate() {
   return obj;
 };
 
-
-userSchema.statics.validLogin = function (email, password) {
-  return (password.length < 8 || !emailValid(email)
-    ? Promise.reject(new BadRequestError('Неккоректные почта или пароль'))
-    : Promise.resolve());
-};
-
-
 userSchema.statics.existingUser = function (email) {
   return this.findOne({ email })
     .then((user) => {
@@ -75,12 +63,7 @@ userSchema.statics.existingUser = function (email) {
 
 userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
-
     .then((user) => {
-      if (password.length < 8 || !emailValid(email)) {
-        return Promise.reject(new BadRequestError('Неккоректные почта или пароль'));
-      }
-
       if (!user) {
         return Promise.reject(new UnathorizedError('Неправильные почта или пароль'));
       }
